@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -54,6 +56,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, Favorie>
+     */
+    #[ORM\OneToMany(targetEntity: Favorie::class, mappedBy: 'User', orphanRemoval: true)]
+    private Collection $favories;
+
+    /**
+     * @var Collection<int, Response>
+     */
+    #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'User', orphanRemoval: true)]
+    private Collection $responses;
+
+    public function __construct()
+    {
+        $this->favories = new ArrayCollection();
+        $this->responses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -210,6 +230,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorie>
+     */
+    public function getFavories(): Collection
+    {
+        return $this->favories;
+    }
+
+    public function addFavory(Favorie $favory): static
+    {
+        if (!$this->favories->contains($favory)) {
+            $this->favories->add($favory);
+            $favory->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavory(Favorie $favory): static
+    {
+        if ($this->favories->removeElement($favory)) {
+            // set the owning side to null (unless already changed)
+            if ($favory->getUser() === $this) {
+                $favory->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Response>
+     */
+    public function getResponses(): Collection
+    {
+        return $this->responses;
+    }
+
+    public function addResponse(Response $response): static
+    {
+        if (!$this->responses->contains($response)) {
+            $this->responses->add($response);
+            $response->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponse(Response $response): static
+    {
+        if ($this->responses->removeElement($response)) {
+            // set the owning side to null (unless already changed)
+            if ($response->getUser() === $this) {
+                $response->setUser(null);
+            }
+        }
 
         return $this;
     }
