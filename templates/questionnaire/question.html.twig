@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Questionnaire Stressless{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="questionnaire-container bg-white shadow">
+            <h1 class="text-center text-white bg-success py-2">Questionnaire</h1>
+
+            <p class="question-title text-center">{{ question.texte }}</p> 
+
+            <div class="d-grid gap-3">
+                {% for choix in question.choix %}
+                    <button class="btn btn-questionnaire btn-lg">{{ choix.texte }}</button>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-success">Valider</button>
+                <button class="btn btn-secondary">Passer</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
