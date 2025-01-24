@@ -29,6 +29,9 @@ class QuestionnaireType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Suivant',
+                'attr' => [
+                    'class' => 'form-control btn-questionnaire'
+                ],
             ]);
     }
 

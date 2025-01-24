@@ -21,6 +21,10 @@ class Response
     #[ORM\JoinColumn(nullable: false)]
     private ?Choices $choice = null;
 
+    #[ORM\ManyToOne(inversedBy: 'responses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Questionnaire $questionnaire = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +50,18 @@ class Response
     public function setChoice(?Choices $choice): static
     {
         $this->choice = $choice;
+
+        return $this;
+    }
+
+    public function getQuestionnaire(): ?Questionnaire
+    {
+        return $this->questionnaire;
+    }
+
+    public function setQuestionnaire(?Questionnaire $questionnaire): static
+    {
+        $this->questionnaire = $questionnaire;
 
         return $this;
     }

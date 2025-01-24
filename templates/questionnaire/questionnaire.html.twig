@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Questionnaire{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card bg-secondary p-2">
+            <div class="d-flex justify-content-center pt-3">
+                {{ form_start(form) }}
+                        {{ form_row(form.Title) }}
+                        {{ form_row(form.description) }}
+                    <button type="submit" class="btn btn-info">Commencer votre test de stress</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

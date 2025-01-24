@@ -19,9 +19,15 @@ class ContenuController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('/contenu', name: 'contenu')]
-    public function index(Request $request, PaginatorInterface $paginator, ContenuRepository $contenuRepository): Response
+    #[Route('/contenu/{stressValue}', name: 'contenu')]
+    public function index(Request $request, PaginatorInterface $paginator, ContenuRepository $contenuRepository, int $stressValue = null): Response
     {
+        if ($stressValue) {
+            $contents = $contenuRepository->findBy(['level' => $stressValue]);
+            return $this->render('contenu/index.html.twig', [
+                'contents' => $contents,
+            ]);
+        }
         $search = $request->query->get('search', '');
         $order = $request->query->get('order', 'asc');
         $query = $contenuRepository->searchAndOrder($search, $order);

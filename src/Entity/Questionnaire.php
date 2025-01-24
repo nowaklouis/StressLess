@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\QuestionnaireRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,24 @@ class Questionnaire
 
     #[ORM\Column(nullable: true)]
     private ?int $somVal = null;
+
+    /**
+     * @var Collection<int, Questions>
+     */
+    #[ORM\OneToMany(targetEntity: Questions::class, mappedBy: 'questionnaire')]
+    private Collection $questions;
+
+    /**
+     * @var Collection<int, Response>
+     */
+    #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'questionnaire', orphanRemoval: true)]
+    private Collection $responses;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+        $this->responses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +95,36 @@ class Questionnaire
     public function setSomVal(?int $somVal): static
     {
         $this->somVal = $somVal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Response>
+     */
+    public function getResponses(): Collection
+    {
+        return $this->responses;
+    }
+
+    public function addResponse(Response $response): static
+    {
+        if (!$this->responses->contains($response)) {
+            $this->responses->add($response);
+            $response->setQuestionnaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponse(Response $response): static
+    {
+        if ($this->responses->removeElement($response)) {
+            // set the owning side to null (unless already changed)
+            if ($response->getQuestionnaire() === $this) {
+                $response->setQuestionnaire(null);
+            }
+        }
 
         return $this;
     }
