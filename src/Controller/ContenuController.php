@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Contenu;
+use App\Entity\Favorie;
 use App\Entity\Image;
 use App\Form\ContenuType;
 use App\Repository\ContenuRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,21 +18,22 @@ use Symfony\Component\Routing\Attribute\Route;
 class ContenuController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private ContenuRepository $contenuRepository
     ) {}
 
     #[Route('/contenu/{stressValue}', name: 'contenu')]
-    public function index(Request $request, PaginatorInterface $paginator, ContenuRepository $contenuRepository, int $stressValue = null): Response
+    public function index(Request $request, PaginatorInterface $paginator, int $stressValue = null): Response
     {
         if ($stressValue) {
-            $contents = $contenuRepository->findBy(['level' => $stressValue]);
+            $contents = $this->contenuRepository->findBy(['level' => $stressValue]);
             return $this->render('contenu/index.html.twig', [
                 'contents' => $contents,
             ]);
         }
         $search = $request->query->get('search', '');
         $order = $request->query->get('order', 'asc');
-        $query = $contenuRepository->searchAndOrder($search, $order);
+        $query = $this->contenuRepository->searchAndOrder($search, $order);
         $contents = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
         return $this->render('contenu/index.html.twig', [
@@ -68,5 +71,30 @@ class ContenuController extends AbstractController
         return $this->render('contenu/create.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/contenu/detail/{contenu}', name: 'contenu_show')]
+    public function detailContenu(Request $request, Contenu $contenu): Response
+    {
+        return $this->render('contenu/show.html.twig', [
+            'contenu' => $contenu,
+        ]);
+    }
+
+    #[Route('/contenu/{contenu}/favori/{favori?null}', name: 'contenu_favori')]
+    public function favoriContenu(Request $request, Contenu $contenu, Favorie $favori): JsonResponse
+    {
+        if ($favori->getId()) {
+            $this->em->remove($favori);
+        } else {
+            $favori = new Favorie();
+            $favori->setContenu($contenu);
+            $favori->setUser($this->getUser());
+            $this->em->persist($favori);
+        }
+
+        $this->em->flush();
+
+        return new JsonResponse();
     }
 }

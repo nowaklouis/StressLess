@@ -23,20 +23,25 @@
             <button type="submit" class="btn btn-primary">Rechercher</button>
         </form>
         <div class="container my-5">
-    <div class="d-flex flex-column align-items-center">
-        {% for content in contents %}
-            <div class="card mb-4" style="width: 28rem;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ content.title }}</h5>
-                    {% if content.image %}
-                        <img src="{{ asset('uploads/images/' ~ content.image.imageName) }}" alt="Image du contenu" class="card-img-top img-fluid" style="max-height: 250px; object-fit: cover;">
-                    {% endif %}
-                    <p class="card-text">{{ content.content }}</p>
-                </div>
+            <div class="d-flex flex-column align-items-center">
+                {% for content in contents %}
+                    <div class="card mb-4" style="width: 28rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ content.title }}</h5>
+                            {% if content.image %}
+                                <img src="{{ asset('uploads/images/' ~ content.image.imageName) }}" alt="Image du contenu" class="card-img-top img-fluid" style="max-height: 250px; object-fit: cover;">
+                            {% endif %}
+                            <p class="card-text">{{ content.content }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between)">
+                            <a href="{{ path('contenu_show', {'contenu': content.id}) }}" class="btn btn-primary">Voir en détail</a>
+                            <a href="{{ path('contenu_favori', {'contenu': content.id}) }}" class="btn btn-danger"><i class="bi bi-heart"></i><i class="fas fa-heart"></i></a> 
+                             {# ici mettre une condition pour alterner, il faut un btn outline avec le coeur vide ou plein dependant du contenu si il est en favori ou non, mettre en javascript le fetch de la route pour le rendre dynamique #}
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-</div>
+        </div>
 
         <div class="d-flex justify-content-center">
             {{ knp_pagination_render(contents) }}

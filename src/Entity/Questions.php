@@ -75,4 +75,9 @@ class Questions
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->getQuestion();
+    }
 }

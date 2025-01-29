@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contenu{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">{{ contenu.title }}</h1>
+        
+        <div class="container my-5">
+            <p>{{ contenu.content }}</p>
+            <p>{{ contenu.level }}</p>
+            <p>{{ contenu.type }}</p>
+            <p>{{ contenu.status }}</p>
+            <p>{{ contenu.createdAt|date('d/m/Y') }}</p>
+            <p>{{ contenu.publishAt|date('d/m/Y') }}</p>
+            <img src="{{ asset('uploads/images/' ~ contenu.image.imageName) }}" alt="Image du contenu" class="card-img-top img-fluid" style="max-height: 250px; object-fit: cover;">
+
+        </div>
+
+    </div>
+    
+{% endblock %}

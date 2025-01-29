@@ -6,11 +6,92 @@ use App\Entity\Choices;
 use App\Entity\Questions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use App\Entity\Contenu;
+use App\Entity\Image;
+use App\Entity\Type;
+use App\Entity\User;
+use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class QuestionsFixtures extends Fixture
+class AppFixtures extends Fixture
 {
+    public function __construct(private UserPasswordHasherInterface $passwordHasher) {}
+
     public function load(ObjectManager $manager): void
     {
+        $faker = Factory::create('fr_FR');
+
+        $adminUser = new User();
+        $adminUser->setEmail('admin@example.com');
+        $adminUser->setFirstname('Admin');
+        $adminUser->setLastname('User');
+        $adminUser->setRoles(['ROLE_ADMIN']);
+        $adminUser->setPassword($this->passwordHasher->hashPassword($adminUser, 'password123'));
+        $adminUser->setActif(true);
+        $adminUser->setVerified(true);
+        $adminUser->setCreatedAt(new \DateTimeImmutable());
+        $adminUser->setStressLevel(1);
+
+        $manager->persist($adminUser);
+
+        // Créer un utilisateur "user"
+        $regularUser = new User();
+        $regularUser->setEmail('user@example.com');
+        $regularUser->setFirstname('Regular');
+        $regularUser->setLastname('User');
+        $regularUser->setRoles(['ROLE_USER']);
+        $regularUser->setPassword($this->passwordHasher->hashPassword($regularUser, 'password123'));
+        $regularUser->setActif(true);
+        $regularUser->setVerified(true);
+        $regularUser->setCreatedAt(new \DateTimeImmutable());
+        $regularUser->setStressLevel(2);
+
+        $manager->persist($regularUser);
+
+        $types = [
+            'Vidéos',
+            'Audio',
+            'Articles et blogs',
+            'Infographies',
+            'Interactif',
+            'Ressources imprimées ou téléchargeables',
+            'Expériences communautaires',
+            'Jeux et activités',
+            'Contenu visuel sur les réseaux sociaux',
+        ];
+
+        $typeEntities = [];
+        foreach ($types as $typeName) {
+            $type = new Type();
+            $type->setName($typeName);
+            $manager->persist($type);
+            $typeEntities[] = $type;
+        }
+
+        for ($i = 0; $i < 30; $i++) {
+            $contenu = new Contenu();
+            $createdAt = $faker->dateTimeBetween('-2 months', 'now');
+            $publishAt = (clone $createdAt)->modify('+1 day');
+
+            $contenu->setTitle($faker->sentence())
+                ->setContent($faker->paragraph())
+                ->setStatus(true)
+                ->setCreatedAt(\DateTimeImmutable::createFromMutable($createdAt))
+                ->setPublishAt(\DateTimeImmutable::createFromMutable($publishAt))
+                ->setLevel(rand(100, 400))
+                ->setType($faker->randomElement($typeEntities));
+
+            $image = new Image();
+            $image->setImageName($faker->word . '.jpg');
+            $image->setUpdatedAt(new \DateTimeImmutable());
+            $image->setContenu($contenu);
+
+            $contenu->setImage($image);
+
+            $manager->persist($contenu);
+            $manager->persist($image);
+        }
+
         $question1 = new Questions();
         $question1->setQuestion('Avez-vous perdu un être cher récemment ?');
         $manager->persist($question1);
