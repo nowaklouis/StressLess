@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon compte{% endblock %}
+
+{% block body %}
+<div class="container m-4 d-flex justify-content-center">
+    <div class="card shadow-lg p-4" style="width: 18rem;">
+        <h2 class="text-center mb-4">Modifier mes informations</h2>
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.firstname) }}
+            {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.lastname) }}
+            {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.bornDate) }}
+            {{ form_widget(form.bornDate, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

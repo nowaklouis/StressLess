@@ -81,20 +81,32 @@ class ContenuController extends AbstractController
         ]);
     }
 
-    #[Route('/contenu/{contenu}/favori/{favori?null}', name: 'contenu_favori')]
-    public function favoriContenu(Request $request, Contenu $contenu, Favorie $favori): JsonResponse
+    #[Route('/contenu/{contenu}/favori/', name: 'contenu_favori')]
+    public function favoriContenu(Request $request, Contenu $contenu): JsonResponse
     {
-        if ($favori->getId()) {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $favori = $this->em->getRepository(Favorie::class)->findOneBy([
+            'contenu' => $contenu,
+            'user' => $user,
+        ]);
+
+        if ($favori) {
             $this->em->remove($favori);
+            $isFavorited = false;
         } else {
             $favori = new Favorie();
             $favori->setContenu($contenu);
-            $favori->setUser($this->getUser());
+            $favori->setUser($user);
             $this->em->persist($favori);
+            $isFavorited = true;
         }
 
         $this->em->flush();
 
-        return new JsonResponse();
+        return new JsonResponse(['isFavorited' => $isFavorited]);
     }
 }

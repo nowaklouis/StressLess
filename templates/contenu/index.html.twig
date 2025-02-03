@@ -35,8 +35,12 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between)">
                             <a href="{{ path('contenu_show', {'contenu': content.id}) }}" class="btn btn-primary">Voir en détail</a>
-                            <a href="{{ path('contenu_favori', {'contenu': content.id}) }}" class="btn btn-danger"><i class="bi bi-heart"></i><i class="fas fa-heart"></i></a> 
-                             {# ici mettre une condition pour alterner, il faut un btn outline avec le coeur vide ou plein dependant du contenu si il est en favori ou non, mettre en javascript le fetch de la route pour le rendre dynamique #}
+                            <button 
+                                class="favori-btn" 
+                                data-contenu-id="{{ contenu.id }}" 
+                                data-favorited="{{ contenu.isFavorited ? 'true' : 'false' }}">
+                                ❤️
+                            </button>
                         </div>
                     </div>
                 {% endfor %}

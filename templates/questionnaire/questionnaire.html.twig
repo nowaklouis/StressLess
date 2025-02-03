@@ -3,14 +3,26 @@
 {% block title %}Questionnaire{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="card bg-secondary p-2">
-            <div class="d-flex justify-content-center pt-3">
-                {{ form_start(form) }}
-                        {{ form_row(form.Title) }}
-                        {{ form_row(form.description) }}
-                    <button type="submit" class="btn btn-info">Commencer votre test de stress</button>
-                {{ form_end(form) }}
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="card shadow p-4" style="max-width: 600px; width: 100%;">
+            <div class="card-body text-center">
+                <h2 class="card-title">Testez votre niveau de stress</h2>
+                <p class="card-text">Le stress peut avoir un impact significatif sur votre bien-être. Découvrez votre niveau de stress grâce à l’échelle de Holmes et Rahe.</p>
+                <p class="card-text">L’échelle de Holmes et Rahe est un outil psychologique permettant d’évaluer le niveau de stress en fonction des événements de vie récents. Plus votre score est élevé, plus votre risque de problèmes de santé liés au stress est important.</p>
+                
+                {% if app.user %}
+                    {{ form_start(form, { 'attr': {'class': 'text-start'} }) }}
+                        <div class="mb-3">
+                            {{ form_row(form.Title, { 'label': 'Titre du test' }) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(form.description, { 'label': 'Description' }) }}
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Commencer votre test de stress</button>
+                    {{ form_end(form) }}
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary w-100">Connectez-vous pour commencer</a>
+                {% endif %}
             </div>
         </div>
     </div>

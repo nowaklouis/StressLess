@@ -40,6 +40,10 @@ class Questionnaire
     #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'questionnaire', orphanRemoval: true)]
     private Collection $responses;
 
+    #[ORM\ManyToOne(inversedBy: 'questionnaires')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -125,6 +129,18 @@ class Questionnaire
                 $response->setQuestionnaire(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

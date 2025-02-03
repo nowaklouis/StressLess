@@ -29,6 +29,7 @@ class QuestionnaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $questionnaire = $form->getData();
             $questionnaire->setCreatedAt(new \DateTimeImmutable());
+            $questionnaire->setUser($this->getUser());
 
             $this->em->persist($questionnaire);
             $this->em->flush();

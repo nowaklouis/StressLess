@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Compte{% endblock %}
+
+{% block body %}
+<div class="container m-4">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center mb-4">Mon Compte</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Prénom :</strong> {{ user.firstname }}</p>
+                <p><strong>Nom :</strong> {{ user.lastname }}</p>
+                <p><strong>Email :</strong> {{ user.email }}</p>
+                <p><strong>Date de naissance :</strong> {{ user.bornDate ? user.bornDate|date('d/m/Y') : 'Non renseignée' }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Niveau de stress :</strong> {{ user.stressLevel ?? 'Non renseigné' }}</p>
+                <p><strong>Date de création :</strong> {{ user.createdAt|date('d/m/Y') }}</p>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('compte_edit') }}" class="btn btn-primary">Modifier mes informations</a>
+        </div>
+
+        <div class="questionnaire-container bg-white shadow p-4 rounded">
+            <p class="text-muted mt-3">
+                <small>
+                    Le score total permet d’évaluer le risque de développer des problèmes de santé liés au stress dans les 24 prochains mois :
+                    <br>- moins de 150 points : risque faible<br>
+                    - entre 150 et 299 points : risque modéré<br>
+                    - plus de 300 points : risque élevé
+                </small>
+            </p>
+        </div>
+
+        {% if questionnaires is empty %}
+            <div class="text-center mt-4">
+                <p>Vous n'avez pas encore de questionnaire</p>
+            </div>
+        {% else %}
+            <div class="text-center mt-4 d-flex justify-content-center flex-wrap">
+                {% for questionnaire in questionnaires %}
+                    <div class="card p-2">
+                        <h1>{{ questionnaire.somVal}}</h1>
+                        <p><strong>Questionnaire du :</strong> {{ questionnaire.createdAt|date('d/m/Y') }}</p>
+                        <p>{{ questionnaire.title }}</p>
+                        <p>{{ questionnaire.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="questionnaire-container bg-white shadow p-4 rounded">
+            <a class="btn btn-questionnaire" href="{{ path('contenu') }}">
+                Dirigez-vous vers les contenus adaptés à votre niveau de stress
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

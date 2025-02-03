@@ -69,11 +69,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Response::class, mappedBy: 'User', orphanRemoval: true)]
     private Collection $responses;
 
+    /**
+     * @var Collection<int, Questionnaire>
+     */
+    #[ORM\OneToMany(targetEntity: Questionnaire::class, mappedBy: 'user')]
+    private Collection $questionnaires;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->favories = new ArrayCollection();
         $this->responses = new ArrayCollection();
+        $this->questionnaires = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -289,6 +296,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($response->getUser() === $this) {
                 $response->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Questionnaire>
+     */
+    public function getQuestionnaires(): Collection
+    {
+        return $this->questionnaires;
+    }
+
+    public function addQuestionnaire(Questionnaire $questionnaire): static
+    {
+        if (!$this->questionnaires->contains($questionnaire)) {
+            $this->questionnaires->add($questionnaire);
+            $questionnaire->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionnaire(Questionnaire $questionnaire): static
+    {
+        if ($this->questionnaires->removeElement($questionnaire)) {
+            // set the owning side to null (unless already changed)
+            if ($questionnaire->getUser() === $this) {
+                $questionnaire->setUser(null);
             }
         }
 
