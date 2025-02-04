@@ -7,8 +7,6 @@ import "./bootstrap.js";
  */
 import "./styles/app.css";
 
-console.log("This log comes from assets/app.js - welcome to AssetMapper! 🎉");
-
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".favori-btn").forEach((button) => {
     button.addEventListener("click", function () {
@@ -37,4 +35,33 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-console.log("Thester! ");
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".favori-btn-compte").forEach((button) => {
+    button.addEventListener("click", function () {
+      const contenuId = this.dataset.contenuId;
+      const isFavorited = this.dataset.favorited === "true";
+      const url = `/contenu/${contenuId}/favori`;
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.isFavorited) {
+            this.innerText = "❤️";
+            this.dataset.favorited = "true";
+          } else {
+            this.innerText = "🤍";
+            this.dataset.favorited = "false";
+          }
+          window.location.reload();
+        })
+        .catch((error) => console.error("Erreur:", error));
+    });
+  });
+});

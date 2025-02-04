@@ -40,4 +40,25 @@ class FavorieRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findFavorisIdsByUser($user): array
+    {
+        return $this->createQueryBuilder('f')
+            ->select('IDENTITY(f.Contenu)')
+            ->where('f.User = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
+
+    public function findContenusFavorisByUser($user)
+    {
+        return $this->createQueryBuilder('f')
+            ->join('f.Contenu', 'c')
+            ->addSelect('c')
+            ->where('f.User = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 }

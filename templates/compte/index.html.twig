@@ -55,6 +55,34 @@
                 Dirigez-vous vers les contenus adaptés à votre niveau de stress
             </a>
         </div>
+
+        {% if favoris is empty %}
+            <div class="text-center mt-4">
+                <p>Vous n'avez pas encore de contenu en favori</p>
+            </div>
+        {% else %}
+            <div class="text-center mt-4 d-flex justify-content-center flex-wrap">
+                {% for favori in favoris %}
+                    <div class="card mb-4" style="width: 28rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ favori.contenu.title }}</h5>
+                            {% if favori.contenu.image %}
+                                <img src="{{ asset('uploads/images/' ~ favori.contenu.image.imageName) }}" alt="Image du contenu" class="card-img-top img-fluid" style="max-height: 250px; object-fit: cover;">
+                            {% endif %}
+                            <p class="card-text">{{ favori.contenu.content }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a href="{{ path('contenu_show', {'contenu': favori.id}) }}" class="btn btn-primary">Voir en détail</a>
+                                {% if favori.contenu.id in realFavoris %}
+                                    <button class="favori-btn-compte text-danger" data-contenu-id="{{ favori.contenu.id }}" data-favorited="true">❤️</button>
+                                {% else %}
+                                    <button class="favori-btn-compte text-secondary" data-contenu-id="{{ favori.contenu.id }}" data-favorited="false">🤍</button>
+                                {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

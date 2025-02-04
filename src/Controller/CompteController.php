@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\ContenuType;
 use App\Form\UserType;
 use App\Repository\ContenuRepository;
+use App\Repository\FavorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ class CompteController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
+        private FavorieRepository $favorieRepository
     ) {}
 
     #[Route('/compte', name: 'compte')]
@@ -29,9 +31,14 @@ class CompteController extends AbstractController
     public function index(): Response
     {
         $user = $this->em->getRepository(User::class)->find($this->getUser());
+        $favoris = $this->favorieRepository->findContenusFavorisByUser($user);
+        $realFavoris = $user ? $this->favorieRepository->findFavorisIdsByUser($user) : [];
+
         return $this->render('compte/index.html.twig', [
             'user' => $this->getUser(),
             'questionnaires' => $user->getQuestionnaires(),
+            'favoris' => $favoris,
+            'realFavoris' => $realFavoris,
         ]);
     }
 

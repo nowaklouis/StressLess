@@ -5,6 +5,7 @@
 {% block body %}
     <div class="container">
         <h1 class="mb-4">Contenu</h1>
+        
         <form method="GET" class="d-flex align-items-center mb-4">
             <input type="text" name="search" class="form-control me-2" placeholder="Rechercher un contenu" value="{{ app.request.query.get('search', '') }}">
             <div class="dropdown me-2">
@@ -22,6 +23,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Rechercher</button>
         </form>
+
         <div class="container my-5">
             <div class="d-flex flex-column align-items-center">
                 {% for content in contents %}
@@ -33,14 +35,15 @@
                             {% endif %}
                             <p class="card-text">{{ content.content }}</p>
                         </div>
-                        <div class="card-footer d-flex justify-content-between)">
+                        <div class="card-footer d-flex justify-content-between">
                             <a href="{{ path('contenu_show', {'contenu': content.id}) }}" class="btn btn-primary">Voir en détail</a>
-                            <button 
-                                class="favori-btn" 
-                                data-contenu-id="{{ contenu.id }}" 
-                                data-favorited="{{ contenu.isFavorited ? 'true' : 'false' }}">
-                                ❤️
-                            </button>
+                            {% if app.user %}
+                                {% if content.id in favoris %}
+                                    <button class="favori-btn text-danger" data-contenu-id="{{ content.id }}" data-favorited="true">❤️</button>
+                                {% else %}
+                                    <button class="favori-btn text-secondary" data-contenu-id="{{ content.id }}" data-favorited="false">🤍</button>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 {% endfor %}
@@ -51,5 +54,4 @@
             {{ knp_pagination_render(contents) }}
         </div>
     </div>
-    
 {% endblock %}

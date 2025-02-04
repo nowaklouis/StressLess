@@ -14,30 +14,34 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\FavorieRepository;
 
 class ContenuController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private ContenuRepository $contenuRepository
+        private ContenuRepository $contenuRepository,
+        private FavorieRepository $favorieRepository
     ) {}
 
     #[Route('/contenu/{stressValue}', name: 'contenu')]
     public function index(Request $request, PaginatorInterface $paginator, int $stressValue = null): Response
     {
+        $user = $this->getUser();
+        $favoris = $user ? $this->favorieRepository->findFavorisIdsByUser($user) : [];
+
         if ($stressValue) {
             $contents = $this->contenuRepository->findBy(['level' => $stressValue]);
-            return $this->render('contenu/index.html.twig', [
-                'contents' => $contents,
-            ]);
+        } else {
+            $search = $request->query->get('search', '');
+            $order = $request->query->get('order', 'asc');
+            $query = $this->contenuRepository->searchAndOrder($search, $order);
+            $contents = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
         }
-        $search = $request->query->get('search', '');
-        $order = $request->query->get('order', 'asc');
-        $query = $this->contenuRepository->searchAndOrder($search, $order);
-        $contents = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
 
         return $this->render('contenu/index.html.twig', [
             'contents' => $contents,
+            'favoris' => $favoris,
         ]);
     }
 
@@ -81,7 +85,7 @@ class ContenuController extends AbstractController
         ]);
     }
 
-    #[Route('/contenu/{contenu}/favori/', name: 'contenu_favori')]
+    #[Route('/contenu/{contenu}/favori', name: 'contenu_favori')]
     public function favoriContenu(Request $request, Contenu $contenu): JsonResponse
     {
         $user = $this->getUser();
@@ -90,8 +94,8 @@ class ContenuController extends AbstractController
         }
 
         $favori = $this->em->getRepository(Favorie::class)->findOneBy([
-            'contenu' => $contenu,
-            'user' => $user,
+            'Contenu' => $contenu,
+            'User' => $user,
         ]);
 
         if ($favori) {
