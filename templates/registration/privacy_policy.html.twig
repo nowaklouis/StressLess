@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de Confidentialité{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Politique de Confidentialité</h1>
+        <p>Dernière mise à jour : {{ "now"|date("d/m/Y") }}</p>
+
+        <h2>1. Collecte des informations</h2>
+        <p>Nous collectons les informations suivantes lorsque vous vous inscrivez sur notre site :</p>
+        <ul>
+            <li>Nom et prénom</li>
+            <li>Adresse e-mail</li>
+            <li>Date de naissance</li>
+            <li>Mot de passe (chiffré)</li>
+            <li>Données techniques (adresse IP, navigateur, logs de connexion)</li>
+        </ul>
+
+        <h2>2. Utilisation des données</h2>
+        <p>Vos données sont utilisées pour :</p>
+        <ul>
+            <li>Créer et gérer votre compte utilisateur</li>
+            <li>Améliorer l’expérience utilisateur</li>
+            <li>Gérer la sécurité et prévenir la fraude</li>
+            <li>Respecter nos obligations légales</li>
+        </ul>
+
+        <h2>3. Partage des données</h2>
+        <p>Nous ne partageons pas vos données avec des tiers, sauf dans les cas suivants :</p>
+        <ul>
+            <li>Obligation légale (autorités judiciaires, réglementations)</li>
+            <li>Services techniques (hébergement, analyses de performances)</li>
+        </ul>
+
+        <h2>4. Sécurité des données</h2>
+        <p>Nous mettons en place des mesures de sécurité pour protéger vos données, telles que :</p>
+        <ul>
+            <li>Chiffrement des mots de passe</li>
+            <li>Protocoles de sécurité pour empêcher l'accès non autorisé</li>
+        </ul>
+
+        <h2>5. Vos droits</h2>
+        <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+        <ul>
+            <li><strong>Droit d'accès :</strong> Vous pouvez demander une copie de vos données.</li>
+            <li><strong>Droit de rectification :</strong> Vous pouvez modifier vos informations.</li>
+            <li><strong>Droit à l’effacement :</strong> Vous pouvez demander la suppression de votre compte.</li>
+            <li><strong>Droit d’opposition :</strong> Vous pouvez refuser l’utilisation de vos données.</li>
+        </ul>
+        <p>Pour exercer vos droits, contactez-nous à <a href="contact@stressless.com">contact@stressless.com</a>.</p>
+
+        <h2>6. Durée de conservation</h2>
+        <p>Vos données sont conservées tant que votre compte est actif. En cas d’inactivité prolongée, elles seront supprimées après 2 ans.</p>
+
+        <h2>7. Modifications</h2>
+        <p>Nous nous réservons le droit de modifier cette politique à tout moment. Nous vous informerons en cas de changements importants.</p>
+
+        <p class="mt-4"><a href="{{ path('register') }}" class="btn btn-primary">Retour à l'inscription</a></p>
+    </div>
+{% endblock %}

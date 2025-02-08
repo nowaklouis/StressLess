@@ -21,7 +21,7 @@
                     </li>
                 </ul>
             </div>
-            <button type="submit" class="btn btn-primary">Rechercher</button>
+            <button type="submit" class="btn btn-success">Rechercher</button>
         </form>
 
         <div class="container my-5">
@@ -36,12 +36,12 @@
                             <p class="card-text">{{ content.content }}</p>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <a href="{{ path('contenu_show', {'contenu': content.id}) }}" class="btn btn-primary">Voir en détail</a>
+                            <a href="{{ path('contenu_show', {'contenu': content.id}) }}" class="btn btn-warning">Voir en détail</a>
                             {% if app.user %}
                                 {% if content.id in favoris %}
-                                    <button class="favori-btn text-danger" data-contenu-id="{{ content.id }}" data-favorited="true">❤️</button>
+                                    <button class="favori-btn btn text-danger" data-contenu-id="{{ content.id }}" data-favorited="true">❤️</button>
                                 {% else %}
-                                    <button class="favori-btn text-secondary" data-contenu-id="{{ content.id }}" data-favorited="false">🤍</button>
+                                    <button class="favori-btn btn text-secondary" data-contenu-id="{{ content.id }}" data-favorited="false">🤍</button>
                                 {% endif %}
                             {% endif %}
                         </div>

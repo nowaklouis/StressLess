@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions d'accès{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Conditions d'accès au site</h1>
+        <p>Dernière mise à jour : {{ "now"|date("d/m/Y") }}</p>
+
+        <h2>1. Acceptation des conditions</h2>
+        <p>En accédant et en utilisant ce site, vous acceptez pleinement et sans réserve les présentes conditions d'utilisation.</p>
+
+        <h2>2. Accès au site</h2>
+        <p>Le site est accessible gratuitement à tout utilisateur disposant d’un accès à Internet. L’utilisateur est responsable de son équipement et de sa connexion.</p>
+
+        <h2>3. Création d’un compte</h2>
+        <p>Pour s'inscrire, l'utilisateur doit fournir des informations exactes et à jour. Toute usurpation d'identité ou fausse information entraînera la suppression du compte.</p>
+
+        <h2>4. Protection des données personnelles</h2>
+        <p>Nous nous engageons à protéger vos données personnelles conformément à notre <a href="{{ path('privacy_policy') }}">politique de confidentialité</a>.</p>
+
+        <h2>5. Responsabilités</h2>
+        <p>L’utilisateur s’engage à ne pas utiliser le site à des fins illégales. L'éditeur du site ne pourra être tenu responsable des dommages liés à l'utilisation du site.</p>
+
+        <h2>6. Modifications des conditions</h2>
+        <p>Nous nous réservons le droit de modifier ces conditions à tout moment. Il vous appartient de consulter cette page régulièrement.</p>
+
+        <p class="mt-4"><a href="{{ path('register') }}" class="btn btn-primary">Retour à l'inscription</a></p>
+    </div>
+{% endblock %}

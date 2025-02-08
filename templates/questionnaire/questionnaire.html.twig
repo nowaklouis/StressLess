@@ -3,7 +3,7 @@
 {% block title %}Questionnaire{% endblock %}
 
 {% block body %}
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container d-flex justify-content-center align-items-center m-3">
         <div class="card shadow p-4" style="max-width: 600px; width: 100%;">
             <div class="card-body text-center">
                 <h2 class="card-title">Testez votre niveau de stress</h2>
@@ -21,7 +21,7 @@
                         <button type="submit" class="btn btn-success w-100">Commencer votre test de stress</button>
                     {{ form_end(form) }}
                 {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-primary w-100">Connectez-vous pour commencer</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-success w-100">Connectez-vous pour commencer</a>
                 {% endif %}
             </div>
         </div>

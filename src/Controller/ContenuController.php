@@ -24,27 +24,6 @@ class ContenuController extends AbstractController
         private FavorieRepository $favorieRepository
     ) {}
 
-    #[Route('/contenu/{stressValue}', name: 'contenu')]
-    public function index(Request $request, PaginatorInterface $paginator, int $stressValue = null): Response
-    {
-        $user = $this->getUser();
-        $favoris = $user ? $this->favorieRepository->findFavorisIdsByUser($user) : [];
-
-        if ($stressValue) {
-            $contents = $this->contenuRepository->findBy(['level' => $stressValue]);
-        } else {
-            $search = $request->query->get('search', '');
-            $order = $request->query->get('order', 'asc');
-            $query = $this->contenuRepository->searchAndOrder($search, $order);
-            $contents = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
-        }
-
-        return $this->render('contenu/index.html.twig', [
-            'contents' => $contents,
-            'favoris' => $favoris,
-        ]);
-    }
-
     #[Route('/contenu/create', name: 'contenu_create')]
     public function createContenu(Request $request): Response
     {
@@ -112,5 +91,26 @@ class ContenuController extends AbstractController
         $this->em->flush();
 
         return new JsonResponse(['isFavorited' => $isFavorited]);
+    }
+
+    #[Route('/contenu/{stressValue}', name: 'contenu')]
+    public function index(Request $request, PaginatorInterface $paginator, int $stressValue = null): Response
+    {
+        $user = $this->getUser();
+        $favoris = $user ? $this->favorieRepository->findFavorisIdsByUser($user) : [];
+
+        if ($stressValue) {
+            $contents = $this->contenuRepository->findBy(['level' => $stressValue]);
+        } else {
+            $search = $request->query->get('search', '');
+            $order = $request->query->get('order', 'asc');
+            $query = $this->contenuRepository->searchAndOrder($search, $order);
+            $contents = $paginator->paginate($query, $request->query->getInt('page', 1), 10);
+        }
+
+        return $this->render('contenu/index.html.twig', [
+            'contents' => $contents,
+            'favoris' => $favoris,
+        ]);
     }
 }

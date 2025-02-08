@@ -36,14 +36,14 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-control text-black'
                 ],
-                'label' => 'First Name',
+                'label' => 'Prénom',
                 'required' => true,
             ])
             ->add('lastname', TextType::class, [
                 'attr' => [
                     'class' => 'form-control text-black'
                 ],
-                'label' => 'Last Name',
+                'label' => 'Nom',
                 'required' => true,
             ])
             ->add('agreeTerms', CheckboxType::class, [
@@ -64,11 +64,11 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Mot de passe',
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter a password',
+                        'message' => 'entrer un mot de passe',
                     ]),
                     new Length([
                         'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
+                        'minMessage' => 'Votre mot de passe doit avoir au moins 6 caractères',
                         'max' => 4096,
                     ]),
                 ],

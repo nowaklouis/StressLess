@@ -25,7 +25,7 @@ class AdminController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Stress Less');
+            ->setTitle('<a href="' . $this->generateUrl('home') . '" style="text-decoration: none; color: inherit;">Stress Less</a>');
     }
 
     public function configureMenuItems(): iterable
