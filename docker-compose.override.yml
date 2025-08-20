@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+    image: devnowa/symfony-app:latest
+    volumes:
+      - .:/var/www/html
+
+  web:
+    volumes:
+      - .:/var/www/html
