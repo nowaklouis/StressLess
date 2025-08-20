@@ -1,115 +1,111 @@
-Projet Solo "Stress Less" pour le bloc Développement projet Web CESI
+---
+# Stress Less - Symfony Project
 
-Création de jeu de test
-lien avec pwa
-
-# Guide de démarrage du projet Symfony - StressLess
+Ce projet Symfony 7 est configuré pour fonctionner avec **Docker**, et inclut un workflow **CI/CD GitHub Actions** pour automatiser les tests et migrations.
+---
 
 ## Prérequis
 
-Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installé
+- [Git](https://git-scm.com/) installé
+- Compte GitHub (pour cloner le repo)
+- Compte Docker Hub (optionnel, pour pull/push des images)
 
-- PHP (version 8.1 ou supérieure recommandée)
-- Composer
-- Symfony CLI (optionnel mais recommandé)
-- Un serveur web (Apache, Nginx ou le serveur interne de Symfony)
-- Une base de données (MySQL, PostgreSQL, SQLite...)
+---
 
-## Installation du projet
+## 1️⃣ Cloner le projet
 
-Cloner le projet :
-
-```sh
-git clone https://github.com/nowaklouis/StressLess.git
+```bash
+git clone https://github.com/devnowa/stress_less.git
 cd stress_less
 ```
 
-Installer les dépendances :
+---
 
-```sh
-composer install
+## 2️⃣ Lancer les conteneurs Docker
+
+Le projet utilise `docker-compose` pour démarrer 3 services :
+
+- `app` : PHP/Symfony
+- `web` : Nginx
+- `db` : MySQL
+
+```bash
+docker compose up -d
 ```
 
-Copier le fichier d'environnement et configurer la base de données :
+- Accéder à l’application : [http://localhost:8080](http://localhost:8080)
 
-```sh
-cp .env .env.local
+---
+
+## 3️⃣ Variables d’environnement
+
+Le fichier `.env` contient la configuration locale pour Symfony. Par défaut :
+
+```dotenv
+DATABASE_URL="mysql://user:password@db:3306/symfony"
 ```
 
-Modifier le fichier `.env.local` pour configurer l'URL de connexion à la base de données :
+- `user` / `password` : identiques à ceux du service MySQL dans `docker-compose.yml`
+- `db` : nom du conteneur MySQL pour la connexion depuis Symfony
 
-```
-DATABASE_URL="mysql://user:password@127.0.0.1:3306/nom_de_la_base"
-```
+⚠️ Pour GitHub Actions, la variable `DATABASE_URL` est définie automatiquement dans le workflow.
 
-## Initialisation de la base de données
+---
 
-Créer la base de données et exécuter les migrations :
+## 4️⃣ Commander Symfony
 
-```sh
-php bin/console doctrine:database:create
+Exemple de commandes à lancer **dans le conteneur app** :
+
+```bash
+docker compose exec app bash
 php bin/console doctrine:migrations:migrate
-```
-
-```sh
-php bin/console doctrine:fixtures:load
-```
-
-## Démarrer le serveur Symfony
-
-Démarrer le serveur de développement :
-
-```sh
-symfony server:start
-```
-
-Ou avec PHP :
-
-```sh
-php -S 127.0.0.1:8000 -t public
-```
-
-## Autres commandes utiles
-
-Vider le cache :
-
-```sh
 php bin/console cache:clear
 ```
 
-Lister les routes disponibles :
+---
 
-```sh
-php bin/console debug:router
+## 5️⃣ Workflow CI/CD GitHub Actions
+
+- Les migrations et tests sont exécutés automatiquement à chaque push ou pull request sur `main`.
+- Fichier de workflow : `.github/workflows/ci.yml`
+
+---
+
+## 6️⃣ Docker Hub (optionnel)
+
+Si vous voulez partager l’image Docker prébuildée avec un collègue :
+
+1. Se connecter à Docker Hub :
+
+```bash
+docker login
 ```
 
-Vérifier la configuration :
+2. Taguer l’image :
 
-```sh
-php bin/console debug:config
+```bash
+docker tag stress_less-app devnowa/stress_less-app:latest
 ```
 
-## Tests et débogage
+3. Pousser l’image :
 
-Exécuter les tests :
-
-```sh
-php bin/phpunit
+```bash
+docker push devnowa/stress_less-app:latest
 ```
 
-Afficher les logs :
+4. Sur la machine du collègue :
 
-```sh
-tail -f var/log/dev.log
-```
-
-## Déploiement
-
-Si vous déployez sur un serveur, pensez à exécuter :
-
-```sh
-composer install --no-dev --optimize-autoloader
-php bin/console cache:clear --env=prod --no-debug
+```bash
+docker pull devnowa/stress_less-app:latest
+docker compose up -d
 ```
 
 ---
+
+## 7️⃣ Arrêter et nettoyer les conteneurs
+
+```bash
+docker compose down
+docker volume prune  # supprime les volumes MySQL si nécessaire
+```
