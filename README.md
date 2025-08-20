@@ -1,12 +1,7 @@
-Projet Solo "Stress Less" pour bloc Développement projet Web CESI
+Projet Solo "Stress Less" pour le bloc Développement projet Web CESI
 
-A partir de page 13 =>
-
-Une documentation technique incluant :
-o La modélisation physique de la base de données : MLD
-o Un comparatif des solutions techniques envisagées avec critères de sélection et argumentation du choix final
-o Un cahier de tests incluant des scenarios de tests complets pour les 2 modules obligatoires (comptes utilisateurs et informations) et un module facultatif au choix
-o Une procédure de validation incluant un modèle de PV de recette
+Création de jeu de test
+lien avec pwa
 
 # Guide de démarrage du projet Symfony - StressLess
 
@@ -80,12 +75,6 @@ Vider le cache :
 
 ```sh
 php bin/console cache:clear
-```
-
-Mettre à jour les dépendances :
-
-```sh
-composer update
 ```
 
 Lister les routes disponibles :
