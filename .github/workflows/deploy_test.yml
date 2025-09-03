@@ -1,0 +1,44 @@
+name: Déploiement sur l'environnement de Test
+
+on:
+  pull_request:
+    branches:
+      - develop # Le workflow se déclenche sur toute PR vers la branche 'develop'
+
+jobs:
+  deploy-to-test:
+    runs-on: ubuntu-latest
+
+    # On ajoute un contrôle pour que ce job ne s'exécute que si la PR est ouverte
+    if: github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize'
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Connexion et Déploiement via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TEST_SERVER_HOST }}
+          username: ${{ secrets.TEST_SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Aller dans le répertoire de l'application sur le serveur de test
+            # Il est crucial d'adapter ce chemin à la bonne localisation sur ton serveur
+            cd /chemin/vers/ton/projet
+
+            # Mettre à jour le code de la branche 'develop'
+            git pull origin develop
+
+            # Arrêter les services en cours et nettoyer
+            docker-compose down
+
+            # Tirer les dernières images depuis Docker Hub (y compris l'image de l'app 'devnowa/symfony-app')
+            docker-compose pull app db
+
+            # Démarrer les services avec les nouvelles images
+            docker-compose up -d --force-recreate
+
+            # Exécuter les migrations de la base de données MySQL
+            # On utilise le nom du service 'app' pour exécuter la commande à l'intérieur du conteneur
+            docker-compose exec app bin/console doctrine:migrations:migrate --no-interaction

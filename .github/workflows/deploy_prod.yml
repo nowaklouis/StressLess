@@ -1,0 +1,47 @@
+name: Déploiement en Production
+
+on:
+  push:
+    branches:
+      - main # Le workflow se déclenche uniquement sur les push vers la branche 'main'
+
+jobs:
+  deploy-to-prod:
+    runs-on: ubuntu-latest
+
+    # On ajoute une condition pour s'assurer que le job ne se lance que si la PR a été mergée dans main
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Connexion et Déploiement via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Aller dans le répertoire de l'application sur le serveur de production
+            # Ce chemin est souvent différent de celui de l'environnement de test
+            cd /var/www/mon-app-prod
+
+            # Mettre à jour le code de la branche 'main'
+            git pull origin main
+
+            # Arrêter les services en cours et nettoyer
+            docker-compose down
+
+            # Tirer les dernières images depuis Docker Hub
+            docker-compose pull app db
+
+            # Démarrer les services avec les nouvelles images
+            docker-compose up -d --force-recreate
+
+            # Exécuter les migrations de la base de données MySQL de production
+            docker-compose exec app bin/console doctrine:migrations:migrate --no-interaction
+
+            # Optionnel : Lancer d'autres commandes de production
+            docker-compose exec app bin/console cache:clear
+            docker-compose exec app bin/console assets:install public
